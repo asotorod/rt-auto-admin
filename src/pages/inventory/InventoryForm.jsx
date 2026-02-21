@@ -299,7 +299,7 @@ export default function InventoryForm() {
               <Field label="Exterior Color" value={form.exterior_color} onChange={v => updateField('exterior_color', v)} placeholder="Black" />
               <Field label="Interior Color" value={form.interior_color} onChange={v => updateField('interior_color', v)} placeholder="Cognac" />
               <div>
-                <Field label="Mileage" value={form.mileage} onChange={v => updateField('mileage', v)} placeholder="32,000" type="number" icon={<Gauge size={16} />} />
+                <Field label="Mileage" value={form.mileage} onChange={v => updateField('mileage', v)} placeholder="32,000" type="number" />
                 <label className="flex items-center gap-2 mt-2.5">
                   <input type="checkbox" checked={form.miles_exempt} onChange={e => updateField('miles_exempt', e.target.checked)} className="accent-brand-gold w-4 h-4" />
                   <span className="text-sm text-brand-muted">Miles Exempt</span>
@@ -330,9 +330,9 @@ export default function InventoryForm() {
               <DollarSign size={16} className="text-brand-gold" /> Pricing
             </h2>
             <div className="space-y-4">
-              <Field label="Asking Price" value={form.asking_price} onChange={v => updateField('asking_price', v)} placeholder="29,995" type="number" icon={<DollarSign size={16} />} />
-              <Field label="Internet Price" value={form.internet_price} onChange={v => updateField('internet_price', v)} placeholder="28,995" type="number" icon={<DollarSign size={16} />} />
-              <Field label="Cost" value={form.cost} onChange={v => updateField('cost', v)} placeholder="22,000" type="number" icon={<DollarSign size={16} />} />
+              <CurrencyField label="Asking Price" value={form.asking_price} onChange={v => updateField('asking_price', v)} placeholder="29,995" />
+              <CurrencyField label="Internet Price" value={form.internet_price} onChange={v => updateField('internet_price', v)} placeholder="28,995" />
+              <CurrencyField label="Cost" value={form.cost} onChange={v => updateField('cost', v)} placeholder="22,000" />
             </div>
           </div>
 
@@ -383,21 +383,37 @@ export default function InventoryForm() {
   );
 }
 
-// Reusable field components
-function Field({ label, value, onChange, placeholder, type = 'text', icon }) {
+// Currency field with clean $ prefix
+function CurrencyField({ label, value, onChange, placeholder }) {
   return (
     <div>
       <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1.5">{label}</label>
-      <div className="relative">
-        {icon && <div className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted">{icon}</div>}
+      <div className="flex items-center bg-brand-darker border border-brand-border rounded-lg focus-within:border-brand-gold/50 transition-colors">
+        <span className="pl-4 pr-1 text-brand-muted font-medium select-none">$</span>
         <input
-          type={type}
+          type="number"
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`w-full bg-brand-darker border border-brand-border rounded-lg py-3 text-white placeholder:text-brand-muted/50 focus:border-brand-gold/50 transition-colors ${icon ? 'pl-10 pr-4' : 'px-4'}`}
+          className="flex-1 bg-transparent py-3 pr-4 pl-1 text-white placeholder:text-brand-muted/50 focus:outline-none"
         />
       </div>
+    </div>
+  );
+}
+
+// Reusable field components
+function Field({ label, value, onChange, placeholder, type = 'text' }) {
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1.5">{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full bg-brand-darker border border-brand-border rounded-lg px-4 py-3 text-white placeholder:text-brand-muted/50 focus:border-brand-gold/50 transition-colors"
+      />
     </div>
   );
 }
