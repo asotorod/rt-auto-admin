@@ -92,32 +92,32 @@ export default function InventoryList() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-display font-bold text-white">Inventory</h1>
-          <p className="text-brand-muted text-sm">{totalCount} vehicles total</p>
+          <h1 className="text-3xl font-display font-bold text-white">Inventory</h1>
+          <p className="text-brand-muted mt-1">{totalCount} vehicles total</p>
         </div>
         {canEdit && (
           <Link
             to="/inventory/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-gold text-brand-dark font-bold text-sm rounded-lg hover:bg-brand-gold-light transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-3 bg-brand-gold text-brand-dark font-bold rounded-lg hover:bg-brand-gold-light transition-colors"
           >
-            <Plus size={16} /> Add Vehicle
+            <Plus size={18} /> Add Vehicle
           </Link>
         )}
       </div>
 
       {/* Filters bar */}
-      <div className="bg-brand-card border border-brand-border rounded-xl p-4 space-y-3">
+      <div className="bg-brand-card border border-brand-border rounded-xl p-5 space-y-4">
         {/* Status tabs */}
-        <div className="flex items-center gap-1 overflow-x-auto">
+        <div className="flex items-center gap-1.5 overflow-x-auto">
           {STATUS_TABS.map(tab => (
             <button
               key={tab.key}
               onClick={() => { setStatusFilter(tab.key); setPage(0); }}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`px-5 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
                 statusFilter === tab.key
                   ? 'bg-brand-gold/10 text-brand-gold'
                   : 'text-brand-muted hover:text-white hover:bg-sidebar-hover'
@@ -130,22 +130,22 @@ export default function InventoryList() {
 
         {/* Search + view toggle */}
         <div className="flex items-center gap-3">
-          <div className="flex-1 flex items-center gap-2 bg-brand-darker border border-brand-border rounded-lg px-3 py-2">
-            <Search size={14} className="text-brand-muted" />
+          <div className="flex-1 flex items-center gap-2.5 bg-brand-darker border border-brand-border rounded-lg px-4 py-2.5">
+            <Search size={16} className="text-brand-muted" />
             <input
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search by year, make, model, VIN, stock..."
-              className="bg-transparent border-none text-sm text-white placeholder:text-brand-muted/40 w-full focus:outline-none"
+              className="bg-transparent border-none text-white placeholder:text-brand-muted/50 w-full focus:outline-none"
             />
           </div>
           <div className="flex items-center border border-brand-border rounded-lg overflow-hidden">
-            <button onClick={() => setViewMode('table')} className={`p-2 ${viewMode === 'table' ? 'bg-brand-gold/10 text-brand-gold' : 'text-brand-muted hover:text-white'}`}>
-              <List size={16} />
+            <button onClick={() => setViewMode('table')} className={`p-2.5 ${viewMode === 'table' ? 'bg-brand-gold/10 text-brand-gold' : 'text-brand-muted hover:text-white'}`}>
+              <List size={18} />
             </button>
-            <button onClick={() => setViewMode('grid')} className={`p-2 ${viewMode === 'grid' ? 'bg-brand-gold/10 text-brand-gold' : 'text-brand-muted hover:text-white'}`}>
-              <Grid3X3 size={16} />
+            <button onClick={() => setViewMode('grid')} className={`p-2.5 ${viewMode === 'grid' ? 'bg-brand-gold/10 text-brand-gold' : 'text-brand-muted hover:text-white'}`}>
+              <Grid3X3 size={18} />
             </button>
           </div>
         </div>
@@ -154,31 +154,31 @@ export default function InventoryList() {
       {/* Loading */}
       {loading ? (
         <div className="flex items-center justify-center h-40">
-          <Loader2 size={24} className="animate-spin text-brand-gold" />
+          <Loader2 size={28} className="animate-spin text-brand-gold" />
         </div>
       ) : viewMode === 'table' ? (
         /* Table view */
         <div className="bg-brand-card border border-brand-border rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full">
               <thead>
                 <tr className="border-b border-brand-border text-brand-muted text-xs uppercase tracking-wider">
-                  <th className="px-4 py-3 text-left w-14"></th>
-                  <th className="px-4 py-3 text-left cursor-pointer hover:text-white" onClick={() => handleSort('stock_number')}>
-                    <span className="flex items-center gap-1">STK# <ArrowUpDown size={10} /></span>
+                  <th className="px-4 py-3.5 text-left w-16"></th>
+                  <th className="px-4 py-3.5 text-left cursor-pointer hover:text-white" onClick={() => handleSort('stock_number')}>
+                    <span className="flex items-center gap-1">STK# <ArrowUpDown size={12} /></span>
                   </th>
-                  <th className="px-4 py-3 text-left">Vehicle</th>
-                  <th className="px-4 py-3 text-left cursor-pointer hover:text-white" onClick={() => handleSort('asking_price')}>
-                    <span className="flex items-center gap-1">Price <ArrowUpDown size={10} /></span>
+                  <th className="px-4 py-3.5 text-left">Vehicle</th>
+                  <th className="px-4 py-3.5 text-left cursor-pointer hover:text-white" onClick={() => handleSort('asking_price')}>
+                    <span className="flex items-center gap-1">Price <ArrowUpDown size={12} /></span>
                   </th>
-                  <th className="px-4 py-3 text-left cursor-pointer hover:text-white" onClick={() => handleSort('mileage')}>
-                    <span className="flex items-center gap-1">Miles <ArrowUpDown size={10} /></span>
+                  <th className="px-4 py-3.5 text-left cursor-pointer hover:text-white" onClick={() => handleSort('mileage')}>
+                    <span className="flex items-center gap-1">Miles <ArrowUpDown size={12} /></span>
                   </th>
-                  <th className="px-4 py-3 text-left">Status</th>
-                  <th className="px-4 py-3 text-left cursor-pointer hover:text-white" onClick={() => handleSort('in_date')}>
-                    <span className="flex items-center gap-1">Age <ArrowUpDown size={10} /></span>
+                  <th className="px-4 py-3.5 text-left">Status</th>
+                  <th className="px-4 py-3.5 text-left cursor-pointer hover:text-white" onClick={() => handleSort('in_date')}>
+                    <span className="flex items-center gap-1">Age <ArrowUpDown size={12} /></span>
                   </th>
-                  <th className="px-4 py-3 text-right">Actions</th>
+                  <th className="px-4 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand-border">
@@ -187,24 +187,24 @@ export default function InventoryList() {
                   const age = v.in_date ? Math.floor((Date.now() - new Date(v.in_date).getTime()) / 86400000) : '—';
                   return (
                     <tr key={v.id} className="hover:bg-sidebar-hover/50 transition-colors">
-                      <td className="px-4 py-2">
-                        <div className="w-14 h-10 rounded overflow-hidden bg-brand-darker">
+                      <td className="px-4 py-3">
+                        <div className="w-16 h-11 rounded-lg overflow-hidden bg-brand-darker">
                           {photo ? (
                             <img src={photo} alt="" className="w-full h-full object-cover" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center"><Car size={14} className="text-brand-muted/30" /></div>
+                            <div className="w-full h-full flex items-center justify-center"><Car size={16} className="text-brand-muted/30" /></div>
                           )}
                         </div>
                       </td>
-                      <td className="px-4 py-2 text-brand-muted font-mono text-xs">{v.stock_number}</td>
-                      <td className="px-4 py-2">
+                      <td className="px-4 py-3 text-brand-muted font-mono text-sm">{v.stock_number}</td>
+                      <td className="px-4 py-3">
                         <div className="text-white font-medium">{v.year} {v.make} {v.model}</div>
-                        <div className="text-brand-muted text-xs">{v.trim || ''} {v.exterior_color ? `• ${v.exterior_color}` : ''}</div>
+                        <div className="text-brand-muted text-sm mt-0.5">{v.trim || ''} {v.exterior_color ? `• ${v.exterior_color}` : ''}</div>
                       </td>
-                      <td className="px-4 py-2 text-white font-bold">${v.asking_price?.toLocaleString() || '—'}</td>
-                      <td className="px-4 py-2 text-brand-muted">{v.mileage?.toLocaleString() || '—'}</td>
-                      <td className="px-4 py-2">
-                        <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                      <td className="px-4 py-3 text-white font-bold">${v.asking_price?.toLocaleString() || '—'}</td>
+                      <td className="px-4 py-3 text-brand-muted">{v.mileage?.toLocaleString() || '—'}</td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider ${
                           v.status === 'active' ? 'bg-success/10 text-success' :
                           v.status === 'sold' ? 'bg-brand-gold/10 text-brand-gold' :
                           v.status === 'pending_sale' ? 'bg-warning/10 text-warning' :
@@ -213,19 +213,19 @@ export default function InventoryList() {
                           {v.status?.replace('_', ' ')}
                         </span>
                       </td>
-                      <td className="px-4 py-2 text-brand-muted">{age}d</td>
-                      <td className="px-4 py-2">
-                        <div className="flex items-center justify-end gap-1">
-                          <Link to={`/inventory/${v.id}`} className="p-1.5 text-brand-muted hover:text-white transition-colors" title="View">
-                            <Eye size={14} />
+                      <td className="px-4 py-3 text-brand-muted">{age}d</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Link to={`/inventory/${v.id}`} className="p-2 text-brand-muted hover:text-white transition-colors rounded-lg hover:bg-sidebar-hover" title="View">
+                            <Eye size={16} />
                           </Link>
                           {canEdit && (
                             <>
-                              <Link to={`/inventory/${v.id}/edit`} className="p-1.5 text-brand-muted hover:text-brand-gold transition-colors" title="Edit">
-                                <Edit2 size={14} />
+                              <Link to={`/inventory/${v.id}/edit`} className="p-2 text-brand-muted hover:text-brand-gold transition-colors rounded-lg hover:bg-sidebar-hover" title="Edit">
+                                <Edit2 size={16} />
                               </Link>
-                              <button onClick={() => handleDelete(v.id)} className="p-1.5 text-brand-muted hover:text-danger transition-colors" title="Delete">
-                                <Trash2 size={14} />
+                              <button onClick={() => handleDelete(v.id)} className="p-2 text-brand-muted hover:text-danger transition-colors rounded-lg hover:bg-sidebar-hover" title="Delete">
+                                <Trash2 size={16} />
                               </button>
                             </>
                           )}
@@ -240,17 +240,17 @@ export default function InventoryList() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-brand-border">
-              <span className="text-xs text-brand-muted">
+            <div className="flex items-center justify-between px-5 py-3.5 border-t border-brand-border">
+              <span className="text-sm text-brand-muted">
                 Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, totalCount)} of {totalCount}
               </span>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setPage(Math.max(0, page - 1))}
                   disabled={page === 0}
-                  className="p-1.5 text-brand-muted hover:text-white disabled:opacity-30 transition-colors"
+                  className="p-2 text-brand-muted hover:text-white disabled:opacity-30 transition-colors"
                 >
-                  <ChevronLeft size={16} />
+                  <ChevronLeft size={18} />
                 </button>
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   const pageNum = page < 3 ? i : page - 2 + i;
@@ -259,7 +259,7 @@ export default function InventoryList() {
                     <button
                       key={pageNum}
                       onClick={() => setPage(pageNum)}
-                      className={`w-8 h-8 rounded text-xs font-medium ${
+                      className={`w-9 h-9 rounded-lg text-sm font-medium ${
                         page === pageNum ? 'bg-brand-gold/10 text-brand-gold' : 'text-brand-muted hover:text-white'
                       }`}
                     >
@@ -270,9 +270,9 @@ export default function InventoryList() {
                 <button
                   onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
                   disabled={page >= totalPages - 1}
-                  className="p-1.5 text-brand-muted hover:text-white disabled:opacity-30 transition-colors"
+                  className="p-2 text-brand-muted hover:text-white disabled:opacity-30 transition-colors"
                 >
-                  <ChevronRight size={16} />
+                  <ChevronRight size={18} />
                 </button>
               </div>
             </div>
@@ -280,7 +280,7 @@ export default function InventoryList() {
         </div>
       ) : (
         /* Grid view */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filtered.map(v => {
             const photo = getPhoto(v);
             return (
@@ -293,15 +293,15 @@ export default function InventoryList() {
                   {photo ? (
                     <img src={photo} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center"><Car size={24} className="text-brand-muted/20" /></div>
+                    <div className="w-full h-full flex items-center justify-center"><Car size={28} className="text-brand-muted/20" /></div>
                   )}
                 </div>
-                <div className="p-4">
-                  <div className="text-white font-bold text-sm">{v.year} {v.make} {v.model}</div>
-                  <div className="text-brand-muted text-xs mt-0.5">{v.trim || ''} &bull; {v.mileage?.toLocaleString()} mi</div>
+                <div className="p-5">
+                  <div className="text-white font-bold">{v.year} {v.make} {v.model}</div>
+                  <div className="text-brand-muted text-sm mt-1">{v.trim || ''} &bull; {v.mileage?.toLocaleString()} mi</div>
                   <div className="flex items-center justify-between mt-3">
-                    <span className="text-brand-gold font-bold">${v.asking_price?.toLocaleString() || '—'}</span>
-                    <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                    <span className="text-brand-gold font-bold text-lg">${v.asking_price?.toLocaleString() || '—'}</span>
+                    <span className={`text-xs font-bold uppercase tracking-wider ${
                       v.status === 'active' ? 'text-success' : v.status === 'sold' ? 'text-brand-gold' : 'text-brand-muted'
                     }`}>{v.status}</span>
                   </div>
