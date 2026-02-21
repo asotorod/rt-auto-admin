@@ -54,38 +54,38 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-display font-bold text-white">
+        <h1 className="text-3xl font-display font-bold text-white">
           Welcome back, {profile?.first_name}
         </h1>
-        <p className="text-brand-muted text-sm mt-1">
+        <p className="text-brand-muted mt-1">
           Here's what's happening at {dealership?.name || 'your dealership'}
         </p>
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {statCards.map(card => (
-          <div key={card.label} className="bg-brand-card border border-brand-border rounded-xl p-5">
+          <div key={card.label} className="bg-brand-card border border-brand-border rounded-xl p-6">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-brand-muted text-xs font-medium uppercase tracking-wider">{card.label}</span>
-              <div className={`w-9 h-9 rounded-lg ${card.bg} flex items-center justify-center`}>
-                <card.icon size={16} className={card.color} />
+              <span className="text-brand-muted text-sm font-medium uppercase tracking-wider">{card.label}</span>
+              <div className={`w-10 h-10 rounded-lg ${card.bg} flex items-center justify-center`}>
+                <card.icon size={18} className={card.color} />
               </div>
             </div>
-            <div className="text-3xl font-bold text-white">{card.value}</div>
+            <div className="text-4xl font-bold text-white">{card.value}</div>
           </div>
         ))}
       </div>
 
       {/* Recent Inventory */}
       <div className="bg-brand-card border border-brand-border rounded-xl">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-brand-border">
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider">Recent Inventory</h2>
-          <Link to="/inventory" className="flex items-center gap-1 text-xs text-brand-gold hover:text-brand-gold-light transition-colors">
-            View All <ArrowRight size={12} />
+        <div className="flex items-center justify-between px-6 py-4 border-b border-brand-border">
+          <h2 className="text-base font-bold text-white uppercase tracking-wider">Recent Inventory</h2>
+          <Link to="/inventory" className="flex items-center gap-1.5 text-sm text-brand-gold hover:text-brand-gold-light transition-colors">
+            View All <ArrowRight size={14} />
           </Link>
         </div>
         <div className="divide-y divide-brand-border">
@@ -93,28 +93,28 @@ export default function Dashboard() {
             <Link
               key={vehicle.id}
               to={`/inventory/${vehicle.id}`}
-              className="flex items-center gap-4 px-5 py-3 hover:bg-sidebar-hover transition-colors"
+              className="flex items-center gap-4 px-6 py-4 hover:bg-sidebar-hover transition-colors"
             >
-              <div className="w-16 h-12 rounded-lg overflow-hidden bg-brand-darker flex-shrink-0">
+              <div className="w-20 h-14 rounded-lg overflow-hidden bg-brand-darker flex-shrink-0">
                 {vehicle.vehicle_photos?.[0]?.url ? (
                   <img src={vehicle.vehicle_photos[0].url} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center"><Car size={16} className="text-brand-muted/30" /></div>
+                  <div className="w-full h-full flex items-center justify-center"><Car size={18} className="text-brand-muted/30" /></div>
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm text-white font-medium truncate">
+                <div className="text-white font-medium truncate">
                   {vehicle.year} {vehicle.make} {vehicle.model} {vehicle.trim || ''}
                 </div>
-                <div className="text-xs text-brand-muted">
+                <div className="text-sm text-brand-muted mt-0.5">
                   STK# {vehicle.stock_number} &bull; {vehicle.mileage?.toLocaleString()} mi
                 </div>
               </div>
               <div className="text-right flex-shrink-0">
-                <div className="text-sm text-white font-bold">
+                <div className="text-white font-bold text-lg">
                   ${vehicle.asking_price?.toLocaleString() || '—'}
                 </div>
-                <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                <span className={`text-xs font-bold uppercase tracking-wider ${
                   vehicle.status === 'active' ? 'text-success' :
                   vehicle.status === 'sold' ? 'text-brand-gold' :
                   'text-brand-muted'
@@ -125,7 +125,7 @@ export default function Dashboard() {
             </Link>
           ))}
           {recentVehicles.length === 0 && (
-            <div className="px-5 py-8 text-center text-brand-muted text-sm">
+            <div className="px-6 py-10 text-center text-brand-muted">
               No vehicles in inventory yet.
               <Link to="/inventory/new" className="text-brand-gold hover:underline ml-1">Add your first vehicle</Link>
             </div>
