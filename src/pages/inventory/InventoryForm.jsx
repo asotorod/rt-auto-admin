@@ -93,7 +93,6 @@ export default function InventoryForm() {
     setDecoding(true);
     setError('');
     try {
-      // Use NHTSA free VIN decode API
       const res = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${form.vin}?format=json`);
       const data = await res.json();
       const results = data.Results || [];
@@ -207,40 +206,40 @@ export default function InventoryForm() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/inventory')} className="text-brand-muted hover:text-white transition-colors">
-            <ArrowLeft size={20} />
+            <ArrowLeft size={22} />
           </button>
           <div>
-            <h1 className="text-2xl font-display font-bold text-white">
+            <h1 className="text-3xl font-display font-bold text-white">
               {isNew ? 'New Vehicle' : `Edit: ${form.year} ${form.make} ${form.model}`}
             </h1>
-            {!isNew && <p className="text-brand-muted text-sm">VIN: {form.vin}</p>}
+            {!isNew && <p className="text-brand-muted">VIN: {form.vin}</p>}
           </div>
         </div>
         <button
           onClick={handleSave}
           disabled={saving || !form.vin || !form.make || !form.model}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-gold text-brand-dark font-bold text-sm rounded-lg hover:bg-brand-gold-light transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-brand-gold text-brand-dark font-bold rounded-lg hover:bg-brand-gold-light transition-colors disabled:opacity-50"
         >
-          {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+          {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
           {isNew ? 'Create Vehicle' : 'Save Changes'}
         </button>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 bg-danger/10 border border-danger/20 text-danger text-sm px-4 py-3 rounded-lg">
-          <AlertCircle size={16} /> {error}
+        <div className="flex items-center gap-2 bg-danger/10 border border-danger/20 text-danger px-4 py-3 rounded-lg">
+          <AlertCircle size={18} /> {error}
         </div>
       )}
 
       {/* VIN Decode Section */}
-      <div className="bg-brand-card border border-brand-border rounded-xl p-5">
-        <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-          <Hash size={14} className="text-brand-gold" /> VIN Decode
+      <div className="bg-brand-card border border-brand-border rounded-xl p-6">
+        <h2 className="text-base font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+          <Hash size={16} className="text-brand-gold" /> VIN Decode
         </h2>
         <div className="flex gap-3">
           <div className="flex-1">
@@ -250,16 +249,16 @@ export default function InventoryForm() {
               onChange={e => updateField('vin', e.target.value.toUpperCase().slice(0, 17))}
               placeholder="Enter 17-digit VIN"
               maxLength={17}
-              className="w-full bg-brand-darker border border-brand-border rounded-lg px-4 py-3 text-white font-mono text-sm placeholder:text-brand-muted/40 focus:border-brand-gold/50 transition-colors uppercase tracking-wider"
+              className="w-full bg-brand-darker border border-brand-border rounded-lg px-4 py-3 text-white font-mono text-lg placeholder:text-brand-muted/50 focus:border-brand-gold/50 transition-colors uppercase tracking-wider"
             />
-            <div className="text-xs text-brand-muted mt-1">{form.vin.length}/17 characters</div>
+            <div className="text-sm text-brand-muted mt-1.5">{form.vin.length}/17 characters</div>
           </div>
           <button
             onClick={handleVinDecode}
             disabled={decoding || form.vin.length !== 17}
-            className="inline-flex items-center gap-2 px-5 py-3 bg-info/10 text-info border border-info/20 font-bold text-sm rounded-lg hover:bg-info/20 transition-colors disabled:opacity-40 h-fit"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-info/10 text-info border border-info/20 font-bold rounded-lg hover:bg-info/20 transition-colors disabled:opacity-40 h-fit"
           >
-            {decoding ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
+            {decoding ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
             Decode
           </button>
         </div>
@@ -269,9 +268,9 @@ export default function InventoryForm() {
         {/* Main info - 2 cols */}
         <div className="lg:col-span-2 space-y-6">
           {/* Vehicle Info */}
-          <div className="bg-brand-card border border-brand-border rounded-xl p-5">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-              <Car size={14} className="text-brand-gold" /> Vehicle Information
+          <div className="bg-brand-card border border-brand-border rounded-xl p-6">
+            <h2 className="text-base font-bold text-white uppercase tracking-wider mb-5 flex items-center gap-2">
+              <Car size={16} className="text-brand-gold" /> Vehicle Information
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <Field label="Year" value={form.year} onChange={v => updateField('year', v)} placeholder="2024" />
@@ -292,33 +291,33 @@ export default function InventoryForm() {
           </div>
 
           {/* Appearance */}
-          <div className="bg-brand-card border border-brand-border rounded-xl p-5">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-              <Palette size={14} className="text-brand-gold" /> Appearance & Condition
+          <div className="bg-brand-card border border-brand-border rounded-xl p-6">
+            <h2 className="text-base font-bold text-white uppercase tracking-wider mb-5 flex items-center gap-2">
+              <Palette size={16} className="text-brand-gold" /> Appearance & Condition
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <Field label="Exterior Color" value={form.exterior_color} onChange={v => updateField('exterior_color', v)} placeholder="Black" />
               <Field label="Interior Color" value={form.interior_color} onChange={v => updateField('interior_color', v)} placeholder="Cognac" />
               <div>
-                <Field label="Mileage" value={form.mileage} onChange={v => updateField('mileage', v)} placeholder="32,000" type="number" icon={<Gauge size={14} />} />
-                <label className="flex items-center gap-2 mt-2">
-                  <input type="checkbox" checked={form.miles_exempt} onChange={e => updateField('miles_exempt', e.target.checked)} className="accent-brand-gold" />
-                  <span className="text-xs text-brand-muted">Miles Exempt</span>
+                <Field label="Mileage" value={form.mileage} onChange={v => updateField('mileage', v)} placeholder="32,000" type="number" icon={<Gauge size={16} />} />
+                <label className="flex items-center gap-2 mt-2.5">
+                  <input type="checkbox" checked={form.miles_exempt} onChange={e => updateField('miles_exempt', e.target.checked)} className="accent-brand-gold w-4 h-4" />
+                  <span className="text-sm text-brand-muted">Miles Exempt</span>
                 </label>
               </div>
             </div>
           </div>
 
           {/* Description */}
-          <div className="bg-brand-card border border-brand-border rounded-xl p-5">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Description</h2>
+          <div className="bg-brand-card border border-brand-border rounded-xl p-6">
+            <h2 className="text-base font-bold text-white uppercase tracking-wider mb-5">Description</h2>
             <Field label="Tagline" value={form.tagline} onChange={v => updateField('tagline', v)} placeholder="Luxury meets performance" />
             <textarea
               value={form.description}
               onChange={e => updateField('description', e.target.value)}
               rows={4}
               placeholder="Vehicle description..."
-              className="mt-4 w-full bg-brand-darker border border-brand-border rounded-lg px-4 py-3 text-white text-sm placeholder:text-brand-muted/40 focus:border-brand-gold/50 transition-colors resize-none"
+              className="mt-4 w-full bg-brand-darker border border-brand-border rounded-lg px-4 py-3 text-white placeholder:text-brand-muted/50 focus:border-brand-gold/50 transition-colors resize-none"
             />
           </div>
         </div>
@@ -326,37 +325,37 @@ export default function InventoryForm() {
         {/* Right sidebar */}
         <div className="space-y-6">
           {/* Pricing */}
-          <div className="bg-brand-card border border-brand-border rounded-xl p-5">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-              <DollarSign size={14} className="text-brand-gold" /> Pricing
+          <div className="bg-brand-card border border-brand-border rounded-xl p-6">
+            <h2 className="text-base font-bold text-white uppercase tracking-wider mb-5 flex items-center gap-2">
+              <DollarSign size={16} className="text-brand-gold" /> Pricing
             </h2>
             <div className="space-y-4">
-              <Field label="Asking Price" value={form.asking_price} onChange={v => updateField('asking_price', v)} placeholder="29,995" type="number" icon={<DollarSign size={14} />} />
-              <Field label="Internet Price" value={form.internet_price} onChange={v => updateField('internet_price', v)} placeholder="28,995" type="number" icon={<DollarSign size={14} />} />
-              <Field label="Cost" value={form.cost} onChange={v => updateField('cost', v)} placeholder="22,000" type="number" icon={<DollarSign size={14} />} />
+              <Field label="Asking Price" value={form.asking_price} onChange={v => updateField('asking_price', v)} placeholder="29,995" type="number" icon={<DollarSign size={16} />} />
+              <Field label="Internet Price" value={form.internet_price} onChange={v => updateField('internet_price', v)} placeholder="28,995" type="number" icon={<DollarSign size={16} />} />
+              <Field label="Cost" value={form.cost} onChange={v => updateField('cost', v)} placeholder="22,000" type="number" icon={<DollarSign size={16} />} />
             </div>
           </div>
 
           {/* Status */}
-          <div className="bg-brand-card border border-brand-border rounded-xl p-5">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Status & Details</h2>
+          <div className="bg-brand-card border border-brand-border rounded-xl p-6">
+            <h2 className="text-base font-bold text-white uppercase tracking-wider mb-5">Status & Details</h2>
             <div className="space-y-4">
               <SelectField label="Status" value={form.status} onChange={v => updateField('status', v)} options={STATUSES} />
               <Field label="Stock Number" value={form.stock_number} onChange={v => updateField('stock_number', v)} placeholder="RT5031T" />
-              <label className="flex items-center gap-3 p-3 bg-brand-darker rounded-lg border border-brand-border cursor-pointer hover:border-brand-gold/30 transition-colors">
-                <input type="checkbox" checked={form.is_featured} onChange={e => updateField('is_featured', e.target.checked)} className="accent-brand-gold" />
+              <label className="flex items-center gap-3 p-4 bg-brand-darker rounded-lg border border-brand-border cursor-pointer hover:border-brand-gold/30 transition-colors">
+                <input type="checkbox" checked={form.is_featured} onChange={e => updateField('is_featured', e.target.checked)} className="accent-brand-gold w-4 h-4" />
                 <div>
-                  <div className="text-sm text-white font-medium flex items-center gap-1"><Star size={12} className="text-brand-gold" /> Featured Vehicle</div>
-                  <div className="text-[10px] text-brand-muted">Show on homepage</div>
+                  <div className="text-white font-medium flex items-center gap-1.5"><Star size={14} className="text-brand-gold" /> Featured Vehicle</div>
+                  <div className="text-xs text-brand-muted mt-0.5">Show on homepage</div>
                 </div>
               </label>
             </div>
           </div>
 
-          {/* Photos (count only for now) */}
-          <div className="bg-brand-card border border-brand-border rounded-xl p-5">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-              <ImagePlus size={14} className="text-brand-gold" /> Photos
+          {/* Photos */}
+          <div className="bg-brand-card border border-brand-border rounded-xl p-6">
+            <h2 className="text-base font-bold text-white uppercase tracking-wider mb-5 flex items-center gap-2">
+              <ImagePlus size={16} className="text-brand-gold" /> Photos
             </h2>
             {photos.length > 0 ? (
               <div className="grid grid-cols-3 gap-2">
@@ -366,14 +365,14 @@ export default function InventoryForm() {
                   </div>
                 ))}
                 {photos.length > 6 && (
-                  <div className="aspect-square rounded-lg bg-brand-darker flex items-center justify-center text-brand-muted text-xs">
+                  <div className="aspect-square rounded-lg bg-brand-darker flex items-center justify-center text-brand-muted">
                     +{photos.length - 6} more
                   </div>
                 )}
               </div>
             ) : (
-              <div className="text-center py-6 text-brand-muted text-sm">
-                <ImagePlus size={24} className="mx-auto mb-2 opacity-40" />
+              <div className="text-center py-8 text-brand-muted">
+                <ImagePlus size={28} className="mx-auto mb-2 opacity-40" />
                 Photo upload coming soon
               </div>
             )}
@@ -388,7 +387,7 @@ export default function InventoryForm() {
 function Field({ label, value, onChange, placeholder, type = 'text', icon }) {
   return (
     <div>
-      <label className="block text-[10px] font-medium text-brand-muted uppercase tracking-wider mb-1">{label}</label>
+      <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1.5">{label}</label>
       <div className="relative">
         {icon && <div className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted">{icon}</div>}
         <input
@@ -396,7 +395,7 @@ function Field({ label, value, onChange, placeholder, type = 'text', icon }) {
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`w-full bg-brand-darker border border-brand-border rounded-lg py-2.5 text-white text-sm placeholder:text-brand-muted/40 focus:border-brand-gold/50 transition-colors ${icon ? 'pl-9 pr-4' : 'px-4'}`}
+          className={`w-full bg-brand-darker border border-brand-border rounded-lg py-3 text-white placeholder:text-brand-muted/50 focus:border-brand-gold/50 transition-colors ${icon ? 'pl-10 pr-4' : 'px-4'}`}
         />
       </div>
     </div>
@@ -406,11 +405,11 @@ function Field({ label, value, onChange, placeholder, type = 'text', icon }) {
 function SelectField({ label, value, onChange, options }) {
   return (
     <div>
-      <label className="block text-[10px] font-medium text-brand-muted uppercase tracking-wider mb-1">{label}</label>
+      <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1.5">{label}</label>
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="w-full bg-brand-darker border border-brand-border rounded-lg px-4 py-2.5 text-white text-sm focus:border-brand-gold/50 transition-colors appearance-none"
+        className="w-full bg-brand-darker border border-brand-border rounded-lg px-4 py-3 text-white focus:border-brand-gold/50 transition-colors appearance-none"
       >
         <option value="">Select...</option>
         {options.map(opt => (
