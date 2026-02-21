@@ -3,4 +3,5 @@ dist
 dist-ssr
 *.local
 .DS_Store
-*.log
+.vscode
+.idea
