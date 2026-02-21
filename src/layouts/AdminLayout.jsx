@@ -41,31 +41,31 @@ export default function AdminLayout() {
       <aside className={`
         fixed lg:static inset-y-0 left-0 z-50 flex flex-col bg-sidebar border-r border-brand-border
         transition-all duration-300 ease-in-out
-        ${collapsed ? 'w-16' : 'w-60'}
+        ${collapsed ? 'w-16' : 'w-64'}
         ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         {/* Logo */}
         <div className="h-16 flex items-center px-4 border-b border-brand-border">
           {!collapsed && (
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-brand-gold flex items-center justify-center">
-                <span className="text-brand-dark font-bold text-sm">RT</span>
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-brand-gold flex items-center justify-center">
+                <span className="text-brand-dark font-bold">RT</span>
               </div>
               <div className="leading-tight">
-                <div className="text-sm font-bold text-white">RT Auto Center</div>
-                <div className="text-[10px] text-brand-muted uppercase tracking-wider">Admin Panel</div>
+                <div className="font-bold text-white">RT Auto Center</div>
+                <div className="text-xs text-brand-muted uppercase tracking-wider">Admin Panel</div>
               </div>
             </div>
           )}
           {collapsed && (
-            <div className="w-8 h-8 rounded-lg bg-brand-gold flex items-center justify-center mx-auto">
-              <span className="text-brand-dark font-bold text-sm">RT</span>
+            <div className="w-9 h-9 rounded-lg bg-brand-gold flex items-center justify-center mx-auto">
+              <span className="text-brand-dark font-bold">RT</span>
             </div>
           )}
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 py-4 px-2.5 space-y-1 overflow-y-auto">
           {NAV_ITEMS.map(item => (
             <NavLink
               key={item.path}
@@ -73,7 +73,7 @@ export default function AdminLayout() {
               end={item.path === '/'}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) => `
-                flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+                flex items-center gap-3 px-3.5 py-3 rounded-lg font-medium transition-all
                 ${isActive
                   ? 'bg-brand-gold/10 text-brand-gold'
                   : 'text-brand-muted hover:text-white hover:bg-sidebar-hover'
@@ -81,10 +81,10 @@ export default function AdminLayout() {
                 ${collapsed ? 'justify-center px-2' : ''}
               `}
             >
-              <item.icon size={18} />
+              <item.icon size={20} />
               {!collapsed && <span>{item.label}</span>}
               {!collapsed && item.badge && (
-                <span className="ml-auto bg-brand-gold text-brand-dark text-[10px] font-bold px-1.5 py-0.5 rounded-full">11</span>
+                <span className="ml-auto bg-brand-gold text-brand-dark text-xs font-bold px-2 py-0.5 rounded-full">11</span>
               )}
             </NavLink>
           ))}
@@ -99,20 +99,20 @@ export default function AdminLayout() {
         </button>
 
         {/* User */}
-        <div className="border-t border-brand-border p-3">
+        <div className="border-t border-brand-border p-3.5">
           <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
-            <div className="w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center flex-shrink-0">
-              <span className="text-brand-gold text-xs font-bold">{initials}</span>
+            <div className="w-9 h-9 rounded-full bg-brand-gold/20 flex items-center justify-center flex-shrink-0">
+              <span className="text-brand-gold text-sm font-bold">{initials}</span>
             </div>
             {!collapsed && (
               <div className="flex-1 min-w-0">
-                <div className="text-sm text-white font-medium truncate">{profile?.first_name} {profile?.last_name}</div>
-                <div className="text-[10px] text-brand-muted uppercase tracking-wider">{profile?.role}</div>
+                <div className="text-white font-medium truncate">{profile?.first_name} {profile?.last_name}</div>
+                <div className="text-xs text-brand-muted uppercase tracking-wider">{profile?.role}</div>
               </div>
             )}
             {!collapsed && (
               <button onClick={handleSignOut} className="text-brand-muted hover:text-danger transition-colors" title="Sign out">
-                <LogOut size={16} />
+                <LogOut size={18} />
               </button>
             )}
           </div>
@@ -125,27 +125,27 @@ export default function AdminLayout() {
         <header className="h-16 flex items-center justify-between px-4 lg:px-6 border-b border-brand-border bg-brand-darker/50 backdrop-blur-sm flex-shrink-0">
           <div className="flex items-center gap-3">
             <button onClick={() => setMobileOpen(true)} className="lg:hidden text-brand-muted hover:text-white">
-              <Menu size={20} />
+              <Menu size={22} />
             </button>
-            <div className="hidden sm:flex items-center gap-2 bg-brand-card border border-brand-border rounded-lg px-3 py-2 w-64">
-              <Search size={14} className="text-brand-muted" />
+            <div className="hidden sm:flex items-center gap-2.5 bg-brand-card border border-brand-border rounded-lg px-4 py-2.5 w-72">
+              <Search size={16} className="text-brand-muted" />
               <input
                 type="text"
                 placeholder="Search vehicles, leads, deals..."
-                className="bg-transparent border-none text-sm text-white placeholder:text-brand-muted/50 w-full focus:outline-none"
+                className="bg-transparent border-none text-white placeholder:text-brand-muted/50 w-full focus:outline-none"
               />
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button className="relative text-brand-muted hover:text-white transition-colors">
-              <Bell size={18} />
-              <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-danger rounded-full text-[8px] text-white flex items-center justify-center font-bold">3</span>
+              <Bell size={20} />
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-danger rounded-full text-[9px] text-white flex items-center justify-center font-bold">3</span>
             </button>
           </div>
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+        <main className="flex-1 overflow-y-auto p-5 lg:p-8">
           <Outlet />
         </main>
       </div>
