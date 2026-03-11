@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import {
   Users, Plus, Search, Phone, Mail, MessageCircle,
-  Clock, Calendar, AlertCircle, Loader2, Car, X, RefreshCw, ArrowUpDown
+  Clock, Calendar, AlertCircle, Loader2, Car, X, RefreshCw, ArrowUpDown, AlertTriangle, Flame
 } from 'lucide-react';
 
 const STATUS_CONFIG = {
@@ -21,11 +21,20 @@ const STATUS_CONFIG = {
 };
 
 const SOURCE_ICONS = {
-  facebook: '📘', instagram: '📸', whatsapp: '💬', cargurus: '🚗',
-  autotrader: '🏷️', cars_com: '🔍', carfax: '📋', website: '🌐',
-  walk_in: '🚶', phone: '📞', referral: '🤝', craigslist: '📝',
-  repeat: '🔄', other: '📌',
+  facebook: '\ud83d\udcd8', instagram: '\ud83d\udcf8', whatsapp: '\ud83d\udcac', cargurus: '\ud83d\ude97',
+  autotrader: '\ud83c\udff7\ufe0f', cars_com: '\ud83d\udd0d', carfax: '\ud83d\udccb', website: '\ud83c\udf10',
+  walk_in: '\ud83d\udeb6', phone: '\ud83d\udcde', referral: '\ud83e\udd1d', craigslist: '\ud83d\udcdd',
+  repeat: '\ud83d\udd04', other: '\ud83d\udccc',
 };
+
+function getFreshness(lead, staleDays = 7, warningDays = 5) {
+  if (['sold', 'lost', 'dead'].includes(lead.status)) return { level: 'closed', color: 'text-gray-500', bg: '', label: '' };
+  const lastActivity = new Date(lead.last_contacted_at || lead.created_at);
+  const daysInactive = Math.floor((Date.now() - lastActivity.getTime()) / 86400000);
+  if (daysInactive >= staleDays) return { level: 'stale', color: 'text-red-400', bg: 'bg-red-500/5 border-red-500/20', label: `Stale (${daysInactive}d)`, days: daysInactive, icon: Flame };
+  if (daysInactive >= warningDays) return { level: 'warning', color: 'text-yellow-400', bg: 'bg-yellow-500/5 border-yellow-500/20', label: `Going stale (${daysInactive}d)`, days: daysInactive, icon: AlertTriangle };
+  return { level: 'fresh', color: 'text-green-400', bg: '', label: '', days: daysInactive };
+}
 
 export default function LeadsList() {
   const { profile } = useAuth();
@@ -34,6 +43,7 @@ export default function LeadsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [stats, setStats] = useState({});
+  const [dealerConfig, setDealerConfig] = useState({ lead_stale_days: 7, lead_warning_days: 5 });
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -44,8 +54,13 @@ export default function LeadsList() {
   const [teamMembers, setTeamMembers] = useState([]);
 
   useEffect(() => {
-    if (profile?.dealership_id) { fetchLeads(); fetchTeam(); }
+    if (profile?.dealership_id) { fetchLeads(); fetchTeam(); fetchConfig(); }
   }, [profile, statusFilter, sourceFilter, assignedFilter, sortBy, sortDir]);
+
+  async function fetchConfig() {
+    const { data } = await supabase.from('dealerships').select('lead_stale_days, lead_warning_days').eq('id', profile.dealership_id).single();
+    if (data) setDealerConfig(data);
+  }
 
   async function fetchLeads() {
     setLoading(true);
@@ -92,27 +107,50 @@ export default function LeadsList() {
     return new Date(dateStr).toLocaleDateString();
   }
 
+  // Filter then sort: stale leads always on top
   const filteredLeads = leads.filter(lead => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (lead.first_name || '').toLowerCase().includes(q) || (lead.last_name || '').toLowerCase().includes(q) || (lead.email || '').toLowerCase().includes(q) || (lead.phone || '').includes(q) || (lead.vehicle_interest_text || '').toLowerCase().includes(q);
+  }).sort((a, b) => {
+    const fa = getFreshness(a, dealerConfig.lead_stale_days, dealerConfig.lead_warning_days);
+    const fb = getFreshness(b, dealerConfig.lead_stale_days, dealerConfig.lead_warning_days);
+    const priority = { stale: 0, warning: 1, fresh: 2, closed: 3 };
+    if (priority[fa.level] !== priority[fb.level]) return priority[fa.level] - priority[fb.level];
+    return 0; // preserve existing sort within same freshness level
   });
 
   const totalLeads = Object.values(stats).reduce((a, b) => a + b, 0);
   const activeLeads = totalLeads - (stats.sold || 0) - (stats.lost || 0) - (stats.dead || 0);
+  const staleCount = leads.filter(l => getFreshness(l, dealerConfig.lead_stale_days, dealerConfig.lead_warning_days).level === 'stale').length;
+  const warningCount = leads.filter(l => getFreshness(l, dealerConfig.lead_stale_days, dealerConfig.lead_warning_days).level === 'warning').length;
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-display font-bold text-white">Leads</h1>
-          <p className="text-brand-muted text-sm mt-1">{totalLeads} total leads &bull; {activeLeads} active</p>
+          <p className="text-brand-muted text-sm mt-1">{totalLeads} total leads &bull; {activeLeads} active
+            {staleCount > 0 && <span className="text-red-400 ml-2">&bull; {staleCount} stale</span>}
+            {warningCount > 0 && <span className="text-yellow-400 ml-2">&bull; {warningCount} going stale</span>}
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={fetchLeads} className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-card border border-brand-border rounded-lg text-brand-muted hover:text-white transition-colors"><RefreshCw size={16} /></button>
           <button onClick={() => navigate('/leads/new')} className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-gold text-brand-dark font-bold rounded-lg hover:bg-brand-gold-light transition-colors"><Plus size={16} /> New Lead</button>
         </div>
       </div>
+
+      {/* Stale Warning Banner */}
+      {staleCount > 0 && (
+        <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 rounded-xl px-5 py-3">
+          <Flame size={18} className="text-red-400 flex-shrink-0" />
+          <div className="flex-1">
+            <span className="text-red-400 font-semibold">{staleCount} stale lead{staleCount > 1 ? 's' : ''}</span>
+            <span className="text-red-400/70 text-sm"> — no activity for {dealerConfig.lead_stale_days}+ days. These will auto-reassign via round-robin.</span>
+          </div>
+        </div>
+      )}
 
       {/* Status Pipeline Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">
@@ -168,6 +206,7 @@ export default function LeadsList() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-brand-border">
+                  <th className="w-3 px-0"></th>
                   <th className="text-left px-5 py-3.5 text-xs font-semibold text-brand-muted uppercase tracking-wider">Status</th>
                   <th className="text-left px-5 py-3.5 text-xs font-semibold text-brand-muted uppercase tracking-wider">Customer</th>
                   <th className="text-left px-5 py-3.5 text-xs font-semibold text-brand-muted uppercase tracking-wider hidden lg:table-cell">Vehicle Interest</th>
@@ -181,12 +220,24 @@ export default function LeadsList() {
               <tbody className="divide-y divide-brand-border">
                 {filteredLeads.map(lead => {
                   const sc = STATUS_CONFIG[lead.status] || STATUS_CONFIG.new;
+                  const freshness = getFreshness(lead, dealerConfig.lead_stale_days, dealerConfig.lead_warning_days);
+                  const FreshnessIcon = freshness.icon;
                   return (
-                    <tr key={lead.id} onClick={() => navigate(`/leads/${lead.id}`)} className="hover:bg-sidebar-hover transition-colors cursor-pointer group">
+                    <tr key={lead.id} onClick={() => navigate(`/leads/${lead.id}`)} className={`hover:bg-sidebar-hover transition-colors cursor-pointer group ${freshness.bg ? 'border-l-2 ' + freshness.bg : ''}`}>
+                      {/* Freshness indicator bar */}
+                      <td className="w-3 px-0">
+                        <div className={`w-1 h-full min-h-[48px] rounded-r ${
+                          freshness.level === 'stale' ? 'bg-red-500' :
+                          freshness.level === 'warning' ? 'bg-yellow-500' :
+                          freshness.level === 'fresh' ? 'bg-green-500/40' : 'bg-transparent'
+                        }`} />
+                      </td>
                       <td className="px-5 py-3.5">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${sc.bg} ${sc.text}`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${sc.color}`} />{sc.label}
                         </span>
+                        {freshness.level === 'stale' && <div className="flex items-center gap-1 mt-1 text-[10px] text-red-400 font-semibold"><Flame size={10} />Stale {freshness.days}d</div>}
+                        {freshness.level === 'warning' && <div className="flex items-center gap-1 mt-1 text-[10px] text-yellow-400 font-semibold"><AlertTriangle size={10} />Going stale</div>}
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
@@ -208,7 +259,7 @@ export default function LeadsList() {
                         </div>
                       </td>
                       <td className="px-5 py-3.5 hidden md:table-cell">
-                        <div className="flex items-center gap-1.5"><span className="text-sm">{SOURCE_ICONS[lead.source] || '📌'}</span><span className="text-xs text-brand-muted capitalize">{lead.source?.replace('_', ' ')}</span></div>
+                        <div className="flex items-center gap-1.5"><span className="text-sm">{SOURCE_ICONS[lead.source] || '\ud83d\udccc'}</span><span className="text-xs text-brand-muted capitalize">{lead.source?.replace('_', ' ')}</span></div>
                         {lead.source_detail && <div className="text-[11px] text-brand-muted/60 mt-0.5 truncate max-w-[160px]">{lead.source_detail}</div>}
                       </td>
                       <td className="px-5 py-3.5 hidden xl:table-cell">
@@ -236,6 +287,11 @@ export default function LeadsList() {
         {!loading && filteredLeads.length > 0 && (
           <div className="px-5 py-3 border-t border-brand-border flex items-center justify-between">
             <span className="text-xs text-brand-muted">Showing {filteredLeads.length} of {totalLeads} leads</span>
+            <div className="flex items-center gap-4 text-xs">
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-green-500/60" />Fresh</span>
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-yellow-500" />Warning ({dealerConfig.lead_warning_days}d+)</span>
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-500" />Stale ({dealerConfig.lead_stale_days}d+)</span>
+            </div>
           </div>
         )}
       </div>
