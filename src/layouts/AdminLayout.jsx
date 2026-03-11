@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth';
 import {
   LayoutDashboard, Car, Users, Handshake, BarChart3, Settings,
@@ -9,7 +10,7 @@ import {
 const NAV_ITEMS = [
   { path: '/', icon: LayoutDashboard, label: 'Dashboard', minRole: 'viewer' },
   { path: '/inventory', icon: Car, label: 'Inventory', minRole: 'viewer' },
-  { path: '/leads', icon: Users, label: 'Leads', minRole: 'salesperson', badge: true },
+  { path: '/leads', icon: Users, label: 'Leads', minRole: 'salesperson', badge: 'leads' },
   { path: '/deals', icon: Handshake, label: 'Deals', minRole: 'salesperson' },
   { path: '/reporting', icon: BarChart3, label: 'Reporting', minRole: 'manager' },
   { path: '/settings', icon: Settings, label: 'Settings', minRole: 'admin' },
@@ -20,6 +21,29 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [newLeadCount, setNewLeadCount] = useState(0);
+
+  useEffect(() => {
+    if (profile?.dealership_id) fetchNewLeadCount();
+    // Poll every 30 seconds for new leads
+    const interval = setInterval(() => {
+      if (profile?.dealership_id) fetchNewLeadCount();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [profile]);
+
+  async function fetchNewLeadCount() {
+    try {
+      const { count } = await supabase
+        .from('leads')
+        .select('*', { count: 'exact', head: true })
+        .eq('dealership_id', profile.dealership_id)
+        .eq('status', 'new');
+      setNewLeadCount(count || 0);
+    } catch (err) {
+      // Silently fail - badge just won't update
+    }
+  }
 
   const handleSignOut = async () => {
     await signOut();
@@ -83,8 +107,8 @@ export default function AdminLayout() {
             >
               <item.icon size={20} />
               {!collapsed && <span>{item.label}</span>}
-              {!collapsed && item.badge && (
-                <span className="ml-auto bg-brand-gold text-brand-dark text-xs font-bold px-2 py-0.5 rounded-full">11</span>
+              {!collapsed && item.badge === 'leads' && newLeadCount > 0 && (
+                <span className="ml-auto bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{newLeadCount}</span>
               )}
             </NavLink>
           ))}
@@ -139,7 +163,9 @@ export default function AdminLayout() {
           <div className="flex items-center gap-3">
             <button className="relative text-brand-muted hover:text-white transition-colors">
               <Bell size={20} />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-danger rounded-full text-[9px] text-white flex items-center justify-center font-bold">3</span>
+              {newLeadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-danger rounded-full text-[9px] text-white flex items-center justify-center font-bold">{newLeadCount}</span>
+              )}
             </button>
           </div>
         </header>
