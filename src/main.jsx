@@ -9,6 +9,8 @@ import InventoryList from './pages/inventory/InventoryList';
 import InventoryForm from './pages/inventory/InventoryForm';
 import VehicleDetail from './pages/inventory/VehicleDetail';
 import LeadsList from './pages/leads/LeadsList';
+import LeadDetail from './pages/leads/LeadDetail';
+import LeadForm from './pages/leads/LeadForm';
 import DealsList from './pages/deals/DealsList';
 import Reports from './pages/reporting/Reports';
 import SettingsPage from './pages/settings/SettingsPage';
@@ -27,6 +29,8 @@ createRoot(document.getElementById('root')).render(
             <Route path="inventory/:id" element={<VehicleDetail />} />
             <Route path="inventory/:id/edit" element={<InventoryForm />} />
             <Route path="leads" element={<LeadsList />} />
+            <Route path="leads/new" element={<LeadForm />} />
+            <Route path="leads/:id" element={<LeadDetail />} />
             <Route path="deals" element={<DealsList />} />
             <Route path="reporting" element={<Reports />} />
             <Route path="settings" element={<SettingsPage />} />
